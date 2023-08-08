@@ -22,8 +22,6 @@ class Acrobot():
         self.g, self.xf, self.dt = self.p['g'], self.p['xf'], self.p['dt']
 
         # Hyperparameters for controllers
-        
-        # TODO Student's code here
         self.K = np.array([0, 0, 0])
         self.Q = 0.01*np.eye(4)
         self.R = 0.001*np.eye(1)
@@ -82,8 +80,6 @@ class Acrobot():
             u: control effort applied to the robot, a scalar number
         """
 
-        # TODO student's code here
-
         K, P = Acrobot.get_lqr_term(self)
         
         dx = x - self.xf
@@ -109,8 +105,6 @@ class Acrobot():
             Blin: 4X1 matrix 
         """
 
-        # TODO student's code here
-
         M_inv = np.linalg.inv(Acrobot.get_M(self, self.xf))
         B = Acrobot.get_B(self,)
         lc1 = self.l1/2
@@ -121,12 +115,9 @@ class Acrobot():
         dT_dq[0,1] = self.m2*self.g*lc2
         dT_dq[1,0] = self.m2*self.g*lc2
         dT_dq[1,1] = self.m2*self.g*lc2
-        # dB_dq = 0
-        # Alin = [[O , I], [ M_inv * dT_dq, O]]
         Alin = np.zeros((4,4))
         Alin[:2, 2:4] = I
         Alin[2:4, :2] = M_inv @ dT_dq
-        # Blin = [[0], [0],[M_inv.reshape(2,2) @ B]]
         Blin = np.zeros((4,1))
         Blin[2:] = (M_inv @ B).reshape((2,1))
 
@@ -145,12 +136,9 @@ class Acrobot():
             P: 4x4 matrix
         """
 
-        # TODO student's code here
-
         Alin, Blin = Acrobot.get_linearized_dynamics(self)
         P = sp.linalg.solve_continuous_are(Alin, Blin, self.Q, self.R, e=None, s=None, balanced=True)
         K = np.linalg.inv(self.R) @ (Blin.T) @ P
-        # print(P)
         return K, P
 
     # Spong's paper, energy based swingup
@@ -164,8 +152,6 @@ class Acrobot():
         returns:
             u: the input applied to the robot, a scalar number
         """
-
-        # TODO student's code here
 
         u = 0
         x[0] = wrap(x[0])
@@ -226,9 +212,6 @@ def plot_trajectory(t:np.ndarray, knees:np.ndarray, toes:np.ndarray, params:dict
         ax.set_title("{:.1f}s".format(t[i]))
     
     anim = animation.FuncAnimation(fig, draw_frame, frames=t.shape[0], repeat=False, interval=dt*1000)
-
-    # Plots:
-    
 
     return anim, fig
 
@@ -324,8 +307,6 @@ def test_acrobot():
 
     plt.show()
     plt.close()
-
-    
 
     return xs, e
 
